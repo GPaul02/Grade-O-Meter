@@ -7,58 +7,117 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; background: #f0f2f5; }
+        body { font-family: sans-serif; text-align: center; background: #f0f2f5; padding: 20px; }
         h1 { color: #2e7d32; }
-        #webcam-container { margin: 20px auto; border: 5px solid #ccc; width: 200px; height: 200px; }
-        .label { font-size: 24px; font-weight: bold; margin: 10px; padding: 10px; border-radius: 5px; }
+        .container { margin-top: 20px; }
+        #webcam-container, #uploaded-image { 
+            margin: 10px auto; 
+            border: 5px solid #ccc; 
+            border-radius: 10px;
+            display: none; /* Hidden by default */
+        }
+        #uploaded-image { max-width: 300px; }
+        .label { font-size: 20px; font-weight: bold; margin: 10px; padding: 10px; border-radius: 5px; }
+        button { padding: 10px 20px; font-size: 16px; margin: 10px; cursor: pointer; }
+        input[type="file"] { margin: 10px; }
     </style>
 </head>
 <body>
     <h1>🍏 Grade-O-Meter</h1>
-    <p>Point camera at produce to Grade Quality</p>
-    <button type="button" onclick="init()">Start Camera</button>
-    <div id="webcam-container"></div>
-    <div id="label-container"></div>
+    <p>Option 1: Scan Live Video</p>
+    <button type="button" onclick="initWebcam()">Start Camera</button>
+    
+    <p>Option 2: Upload Photo</p>
+    <input type="file" accept="image/*" onchange="handleImageUpload(this)">
+
+    <div class="container">
+        <div id="webcam-container"></div>
+        <img id="uploaded-image" src="#" alt="Uploaded Image">
+        <div id="label-container"></div>
+    </div>
 
     <script type="text/javascript">
         const URL = "./"; 
         let model, webcam, labelContainer, maxPredictions;
+        let isWebcamRunning = false;
 
-        async function init() {
-            const modelURL = URL + "model.json";
-            const metadataURL = URL + "metadata.json";
-            model = await tmImage.load(modelURL, metadataURL);
-            maxPredictions = model.getTotalClasses();
+        // Load the model first
+        async function loadModel() {
+            if (!model) {
+                const modelURL = URL + "model.json";
+                const metadataURL = URL + "metadata.json";
+                model = await tmImage.load(modelURL, metadataURL);
+                maxPredictions = model.getTotalClasses();
+                
+                // Setup label container
+                labelContainer = document.getElementById("label-container");
+                labelContainer.innerHTML = ""; // Clear previous
+                for (let i = 0; i < maxPredictions; i++) { 
+                    labelContainer.appendChild(document.createElement("div"));
+                }
+            }
+        }
+
+        // --- OPTION 1: WEBCAM ---
+        async function initWebcam() {
+            await loadModel();
+            if (isWebcamRunning) return;
 
             const flip = true; 
-            webcam = new tmImage.Webcam(200, 200, flip); 
+            webcam = new tmImage.Webcam(300, 300, flip); 
             await webcam.setup(); 
             await webcam.play();
             window.requestAnimationFrame(loop);
 
+            // UI Updates
             document.getElementById("webcam-container").appendChild(webcam.canvas);
-            labelContainer = document.getElementById("label-container");
-            for (let i = 0; i < maxPredictions; i++) { 
-                labelContainer.appendChild(document.createElement("div"));
-            }
+            document.getElementById("webcam-container").style.display = "block";
+            document.getElementById("uploaded-image").style.display = "none";
+            isWebcamRunning = true;
         }
 
         async function loop() {
-            webcam.update(); 
-            await predict();
-            window.requestAnimationFrame(loop);
+            if (isWebcamRunning) {
+                webcam.update(); 
+                await predict(webcam.canvas);
+                window.requestAnimationFrame(loop);
+            }
         }
 
-        async function predict() {
-            const prediction = await model.predict(webcam.canvas);
+        // --- OPTION 2: IMAGE UPLOAD ---
+        async function handleImageUpload(input) {
+            await loadModel();
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('uploaded-image');
+                    img.src = e.target.result;
+                    img.style.display = "block";
+                    document.getElementById("webcam-container").style.display = "none";
+                    isWebcamRunning = false; // Stop webcam loop if active
+                    
+                    // Predict after image loads
+                    img.onload = function() {
+                        predict(img);
+                    }
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // --- PREDICTION LOGIC ---
+        async function predict(inputElement) {
+            const prediction = await model.predict(inputElement);
             for (let i = 0; i < maxPredictions; i++) {
                 const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
                 labelContainer.childNodes[i].innerHTML = classPrediction;
                 labelContainer.childNodes[i].className = "label";
+                
+                // Color Logic
                 if(prediction[i].className.includes("Grade A") && prediction[i].probability > 0.8) {
-                    labelContainer.childNodes[i].style.backgroundColor = "#90ee90"; 
+                    labelContainer.childNodes[i].style.backgroundColor = "#90ee90"; // Green
                 } else if (prediction[i].className.includes("Grade B") && prediction[i].probability > 0.8) {
-                    labelContainer.childNodes[i].style.backgroundColor = "#ffcccb"; 
+                    labelContainer.childNodes[i].style.backgroundColor = "#ffcccb"; // Red
                 } else {
                     labelContainer.childNodes[i].style.backgroundColor = "transparent";
                 }
