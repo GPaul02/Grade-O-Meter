@@ -1,5 +1,4 @@
-Grade-O-Meter
-AI-Driven Quality Standardization for Rural Supply Chains
+# Grade-O-Meter: AI-Powered Supply Chain Quality Standardization
 
 Overview:
 Grade-O-Meter is an Edge-AI logistics platform designed to reduce information asymmetry in rural agricultural supply chains. It converts subjective, manual quality inspections into objective, real-time data, improving transparency, traceability, and confidence between farmers and buyers. The system uses computer vision for on-device image analysis and geolocation for source validation, enabling accurate and fair quality grading directly at the point of origin.
