@@ -9,13 +9,13 @@ The following diagram illustrates the data flow from the user's device to the in
 
 ```mermaid
 graph LR
-    User["User / Farmer"] -->|1. Capture| UI["Dashboard UI"]
-    UI -->|2. Image Data| Logic["App Logic (JS)"]
+    User["User /<br/>Farmer"] -->|1. Capture| UI["Dashboard UI<br/>(HTML5)"]
+    UI -->|2. Image Data| Logic["App Logic<br/>(JS)"]
     
     subgraph "Client-Side Processing"
-        Logic -->|GPS Request| Geo["Geolocation API"]
-        Logic -->|Input Tensor| TF["TensorFlow.js"]
-        TF -->|Load Model| Model["MobileNet V2"]
+        Logic -->|GPS Request| Geo["Geolocation<br/>API"]
+        Logic -->|Input Tensor| TF["TensorFlow.js<br/>Engine"]
+        TF -->|Load Model| Model["MobileNet V2<br/>(JSON/Bin)"]
         TF -->|Prediction| Logic
     end
     
