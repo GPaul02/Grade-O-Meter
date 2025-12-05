@@ -1,10 +1,9 @@
 # Grade-O-Meter: AI-Powered Supply Chain Quality Standardization
 
-Overview:
-Grade-O-Meter is an Edge-AI logistics platform designed to reduce information asymmetry in rural agricultural supply chains. It converts subjective, manual quality inspections into objective, real-time data, improving transparency, traceability, and confidence between farmers and buyers. The system uses computer vision for on-device image analysis and geolocation for source validation, enabling accurate and fair quality grading directly at the point of origin.
+##  Project Overview
+Grade-O-Meter is an **Edge-AI Logistics Dashboard** that solves "Information Asymmetry" in rural supply chains. It digitizes subjective quality checks into objective data using Computer Vision and Geolocation.
 
-Live Application:
-https://GPaul02.github.io/Grade-O-Meter/
+**Live Demo:** [Click Here to Open App](https://GPaul02.github.io/Grade-O-Meter/)
 
 Technical Summary:
 Grade-O-Meter is a fully client-side web application developed using TensorFlow.js for real-time image inference. All processing takes place on the user’s device, resulting in:
