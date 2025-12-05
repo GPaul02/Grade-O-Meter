@@ -8,23 +8,23 @@ Grade-O-Meter is a client-side web application designed for offline inference. I
 The following diagram illustrates the data flow from the user's device to the inference engine and back to the dashboard.
 
 ```mermaid
-graph TD
-    User["User / Farmer"] -->|Captures Image| UI["Dashboard UI (HTML5)"]
-    UI -->|Sends Image Data| Logic["App Logic (JS)"]
+graph LR
+    User["User / Farmer"] -->|1. Capture| UI["Dashboard UI"]
+    UI -->|2. Image Data| Logic["App Logic (JS)"]
     
-    subgraph "Client-Side Browser Environment"
-        Logic -->|Request GPS| Geo["Geolocation API"]
-        Logic -->|Input Tensor| TF["TensorFlow.js Engine"]
-        TF -->|Load Model| Model["MobileNet V2 (JSON/Bin)"]
-        TF -->|Return Probability| Logic
+    subgraph "Client-Side Processing"
+        Logic -->|GPS Request| Geo["Geolocation API"]
+        Logic -->|Input Tensor| TF["TensorFlow.js"]
+        TF -->|Load Model| Model["MobileNet V2"]
+        TF -->|Prediction| Logic
     end
     
-    Logic -->|Update Stats| Batch["Batch Analytics Module"]
-    Batch -->|Render| UI
+    Logic -->|3. Update Stats| Batch["Batch Analytics"]
+    Batch -->|4. Render| UI
     
-    style User fill:#f9f,stroke:#333,stroke-width:2px
-    style TF fill:#bbf,stroke:#333,stroke-width:2px
-    style Model fill:#bfb,stroke:#333,stroke-width:2px
+    style User fill:#ff9,stroke:#333,stroke-width:2px,color:black
+    style UI fill:#bbf,stroke:#333,stroke-width:2px,color:black
+    style Logic fill:#bfb,stroke:#333,stroke-width:2px,color:black
 ```
     
 
