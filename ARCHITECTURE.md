@@ -21,10 +21,6 @@ graph LR
     
     Logic -->|3. Update Stats| Batch["Batch Analytics"]
     Batch -->|4. Render| UI
-    
-    style User fill:#ff9,stroke:#333,stroke-width:2px,color:black
-    style UI fill:#bbf,stroke:#333,stroke-width:2px,color:black
-    style Logic fill:#bfb,stroke:#333,stroke-width:2px,color:black
 ```
     
 
