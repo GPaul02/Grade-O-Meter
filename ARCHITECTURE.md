@@ -5,30 +5,27 @@ Grade-O-Meter is a client-side web application designed for offline inference. I
 
 ## 2. Architectural Diagram
 
-[ User Device (Smartphone/Laptop) ]
-         |
-         | (1. Request App)
-         v
-[ GitHub Pages (Static Host) ]
-         |
-         | (2. Delivers HTML/JS/Assets)
-         v
-[ Browser Runtime Environment ]
-    |
-    +--- [ UI Layer (HTML5/Bootstrap) ] <-----> [ DOM Updates (Dashboard) ]
-    |
-    +--- [ Logic Layer (JavaScript) ]
-    |       |
-    |       +--- [ Geolocation API ] (Fetches GPS)
-    |       +--- [ TensorFlow.js Engine ]
-    |                  ^
-    |                  | (3. Loads Model)
-    |                  v
-    |            [ MobileNet Model Files (JSON/Bin) ]
-    |
-    +--- [ Input Layer ]
-            |
-            +--- [ Webcam Feed ] OR [ File Upload ]
+The following diagram illustrates the data flow from the user's device to the inference engine and back to the dashboard.
+
+```mermaid
+graph TD
+    User[User / Farmer] -->|Captures Image| UI[Dashboard UI (HTML5)]
+    UI -->|Sends Image Data| Logic[App Logic (JS)]
+    
+    subgraph "Client-Side Browser Environment"
+        Logic -->|Request GPS| Geo[Geolocation API]
+        Logic -->|Input Tensor| TF[TensorFlow.js Engine]
+        TF -->|Load Model| Model[MobileNet V2 (JSON/Bin)]
+        TF -->|Return Probability| Logic
+    end
+    
+    Logic -->|Update Stats| Batch[Batch Analytics Module]
+    Batch -->|Render| UI
+    
+    style User fill:#f9f,stroke:#333,stroke-width:2px
+    style TF fill:#bbf,stroke:#333,stroke-width:2px
+    style Model fill:#bfb,stroke:#333,stroke-width:2px
+    
 
 ## 3. Data Flow
 1.  **Input:** User captures image via Webcam or Upload.
