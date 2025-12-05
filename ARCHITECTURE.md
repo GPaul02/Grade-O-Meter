@@ -7,6 +7,7 @@ Grade-O-Meter is a client-side web application designed for offline inference. I
 
 The following diagram illustrates the data flow from the user's device to the inference engine and back to the dashboard.
 
+```mermaid
 graph TD
     User["User / Farmer"] -->|Captures Image| UI["Dashboard UI (HTML5)"]
     UI -->|Sends Image Data| Logic["App Logic (JS)"]
@@ -24,6 +25,7 @@ graph TD
     style User fill:#f9f,stroke:#333,stroke-width:2px
     style TF fill:#bbf,stroke:#333,stroke-width:2px
     style Model fill:#bfb,stroke:#333,stroke-width:2px
+```
     
 
 ## 3. Data Flow
