@@ -7,19 +7,18 @@ Grade-O-Meter is a client-side web application designed for offline inference. I
 
 The following diagram illustrates the data flow from the user's device to the inference engine and back to the dashboard.
 
-```mermaid
 graph TD
-    User[User / Farmer] -->|Captures Image| UI[Dashboard UI (HTML5)]
-    UI -->|Sends Image Data| Logic[App Logic (JS)]
+    User["User / Farmer"] -->|Captures Image| UI["Dashboard UI (HTML5)"]
+    UI -->|Sends Image Data| Logic["App Logic (JS)"]
     
     subgraph "Client-Side Browser Environment"
-        Logic -->|Request GPS| Geo[Geolocation API]
-        Logic -->|Input Tensor| TF[TensorFlow.js Engine]
-        TF -->|Load Model| Model[MobileNet V2 (JSON/Bin)]
+        Logic -->|Request GPS| Geo["Geolocation API"]
+        Logic -->|Input Tensor| TF["TensorFlow.js Engine"]
+        TF -->|Load Model| Model["MobileNet V2 (JSON/Bin)"]
         TF -->|Return Probability| Logic
     end
     
-    Logic -->|Update Stats| Batch[Batch Analytics Module]
+    Logic -->|Update Stats| Batch["Batch Analytics Module"]
     Batch -->|Render| UI
     
     style User fill:#f9f,stroke:#333,stroke-width:2px
